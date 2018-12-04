@@ -13,19 +13,17 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
     public partial class fThem : Form
     {
         public NHANVIEN temp = new NHANVIEN();
+        public int ktThem = 0;
         public fThem()
         {
             InitializeComponent();
         }
         private void bXacNhan_Click(object sender, EventArgs e)
         {
-            if ((tMSNV.Text == null) || (tHoTenDem.Text == null) || (tTen.Text == null) || (tCMND.Text == null) || (tNgaySinh.Text == null) || (tCongViec.Text == null))
-                MessageBox.Show("Thêm thất bại. \n Dữ liệu không được để trống.", "THÔNG BÁO:");
+            if (tMSNV.Text.CompareTo("") == 0) ktThem = 1;
             else
-            {
                 temp.Nhap(tMSNV.Text, tHoTenDem.Text, tTen.Text, tCMND.Text, tNgaySinh.Text, tCongViec.Text, tLuong.Text);
-                MessageBox.Show("Thêm thành công.", "THÔNG BÁO:");
-            }
+            this.Close();
         }
     }
 }

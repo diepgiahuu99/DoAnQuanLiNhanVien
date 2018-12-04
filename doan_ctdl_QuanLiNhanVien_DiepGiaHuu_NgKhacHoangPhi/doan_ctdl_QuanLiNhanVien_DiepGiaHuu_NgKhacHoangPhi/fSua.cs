@@ -29,6 +29,7 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
             congviec = tCongViec.Text;
             luong = tLuong.Text;
             NVtd.Nhap(msnv, hotendem, ten, cmnd, ngaysinh, congviec, luong);
+            this.Close();
         }
     }
 }

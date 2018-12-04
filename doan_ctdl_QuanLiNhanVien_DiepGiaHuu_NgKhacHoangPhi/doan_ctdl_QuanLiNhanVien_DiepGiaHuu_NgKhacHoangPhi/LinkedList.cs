@@ -79,9 +79,9 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
             Head = Tail = null;
         }
         // Hàm kiểm tra danh sách liên kết có rỗng hay không
-        public int IsEmptyList(LinkedList myList)
+        public int IsEmptyList()
         {
-            if (myList.Head == null)
+            if (this.Head == null)
                 return 1;               // Danh sách rỗng
             return 0;                   // Danh sách không rỗng
         }
@@ -89,8 +89,13 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
         public void addTail(NHANVIEN x)
         {
             Node p = new Node(x, null);
-            Tail.Next = p;
-            Tail = p;
+            if (this.Head == null)
+                this.Head = this.Tail = p;
+            else
+            {
+                this.Tail.Next = p;
+                this.Tail = p;
+            }
         }
         //Thêm vào đầu danh sách      
         public void addHead(NHANVIEN x)
@@ -188,5 +193,54 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
             }
             return dem;
         }
+        // Hàm hủy danh sách liên kết
+        public void clear(LinkedList myList)
+        {
+            Node temp = new Node();
+            temp = myList.Head;
+            while (temp != null)
+            {
+                myList.removeHead(myList);
+                temp = temp.Next;
+            }
+        }
+        //Sắp xếp theo MSNV
+        public void Sort()
+        {
+            LinkedList lnv1 = new LinkedList();
+            LinkedList lnv2 = new LinkedList();
+            Node pivot, p;
+            if (Head == Tail)
+                return;
+            pivot = Head;
+            p = Head.Next;
+            string[] msnvPivot = pivot.info.MSNV.Split('V');
+            while (p != null)
+            {
+                Node q = p;
+                p = p.Next;
+                q.Next = null;
+                string[] msnvQ = q.info.MSNV.Split('V');
+                if (Convert.ToInt32(msnvQ[1]) < Convert.ToInt32(msnvPivot[1]))
+                    lnv1.addTail(q.info);
+                else
+                    lnv2.addTail(q.info);
+            };
+            lnv1.Sort();
+            lnv2.Sort();
+            if (lnv1.IsEmptyList() == 0)
+            {
+                this.Head = lnv1.Head;
+                lnv1.Tail.Next = pivot;
+            }
+            else
+                this.Head = pivot;
+            pivot.Next = lnv2.Head;
+            if (lnv2.IsEmptyList() == 0)
+                this.Tail = lnv2.Tail;
+            else
+                this.Tail = pivot;
+        }
     }
 }
+

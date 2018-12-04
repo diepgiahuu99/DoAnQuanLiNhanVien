@@ -21,6 +21,8 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
         private void bXacNhan_Click(object sender, EventArgs e)
         {
             NVxoa = tMSNV.Text;
+            //MessageBox.Show("Hoàn tất.", "THÔNG BÁO:");
+            this.Close();
         }
     }
 }

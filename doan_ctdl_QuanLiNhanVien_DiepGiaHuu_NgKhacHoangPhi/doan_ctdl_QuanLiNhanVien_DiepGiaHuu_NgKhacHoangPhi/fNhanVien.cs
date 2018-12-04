@@ -15,7 +15,7 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
     public partial class fNhanVien : Form
     {     
         // Khai báo 
-        public LinkedList myList = new LinkedList();
+        LinkedList myList = new LinkedList();
         List<string> dsChuoi = new List<string>();
         public int sonv;
         private void fNhanVien_Load()
@@ -27,7 +27,8 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
         }
         // Các câu lệnh cho các button
         private void bDanhSach_Click(object sender, EventArgs e)
-        {          
+        {
+            //myList.Sort();
             Node xuat1 = myList.Head;
             int m = 1;
             DataTable dt = new DataTable();
@@ -63,7 +64,7 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
                 dt.Rows.Add(row);
             }
             dDanhSachNhanVien.DataSource = dt;
-            if (dt == null) MessageBox.Show("Danh sách nhân viên đang rỗng. \n Hãy LẤY DỮ LIỆU hoặc THÊM", "THÔNG BÁO:");
+            if (myList.Head == null) MessageBox.Show("Danh sách nhân viên đang rỗng. \nHãy LẤY DỮ LIỆU hoặc THÊM", "THÔNG BÁO:");
             else MessageBox.Show("Xuất thành công.", "THÔNG BÁO:");
         }
 
@@ -71,15 +72,53 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
         {
             fThem them = new fThem();
             them.ShowDialog();
-            if(them.temp != null)
-                 myList.addHead(them.temp);
+            Node p = new Node();
+            NHANVIEN NVthem = new NHANVIEN();
+            NVthem = them.temp;
+            p = myList.Head;
+            int kt = 0;
+            if (them.ktThem==1)
+                MessageBox.Show("Thông tin thêm vào không hợp lệ hoặc đang trống.", "THÔNG BÁO:");
+            else
+            {
+                while (p != null)
+                {
+                    if (them.temp.MSNV == p.info.MSNV)
+                    {
+                        kt = 1; //Nếu MSNV bị trùng thì thay đổi biến kt để không thêm vào danh sách liên kết.  
+                    }
+                    p = p.Next;
+                }
+                if (kt == 0 && them.temp.MSNV != null)
+                {
+                    myList.addHead(them.temp);
+                    myList.Sort();
+                    MessageBox.Show("Thêm nhân viên thành công.", "THÔNG BÁO:");
+                }
+            }
         }
 
         private void bXoa_Click(object sender, EventArgs e)
         {
             fXoa xoa = new fXoa();
             xoa.ShowDialog();
-            myList.removeKey(myList, xoa.NVxoa);
+            int kt = 0;
+            Node p = new Node();
+            p = myList.Head;
+            while (p!=null)
+            {
+                if (xoa.NVxoa == p.info.MSNV)
+                {
+                    kt = 1;
+                }
+                p = p.Next;
+            }
+            if (kt == 1)
+            {
+                myList.removeKey(myList, xoa.NVxoa);
+                MessageBox.Show("Xóa thành công.", "THÔNG BÁO:");
+            }
+            else MessageBox.Show("Xóa không thành công. \nNhân viên muốn xóa không tồn tại hoặc bạn chưa nhập MSNV cần xóa", "THÔNG BÁO:");
         }
 
         private void bTimKiem_Click(object sender, EventArgs e)
@@ -103,9 +142,9 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
             timkiem.Columns.Add("Công việc", typeof(string));
             timkiem.Columns.Add("Lương", typeof(string));
             int m = 1;
+            timkiem.Clear();
             for (int i = 0; i < myList.found.Count; i++)
-            {
-                timkiem.Clear();
+            {                
                 string msnv = myList.found[i].MSNV;
                 string hotendem = myList.found[i].HoTenDem;
                 string ten = myList.found[i].Ten;
@@ -127,12 +166,14 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
             }
             dDanhSachNhanVien.DataSource = timkiem;
             if (myList.found.Count == 0) MessageBox.Show("Không có thông tin tương thích.", "THÔNG BÁO:");
+            myList.found.Clear();
         }
 
         private void bSua_Click(object sender, EventArgs e)
         {
             fSua sua = new fSua();
             sua.ShowDialog();
+            int kt = 0;
             Node NVthaydoi = new Node();
             NVthaydoi = myList.Head;
             while (NVthaydoi != null)
@@ -140,9 +181,12 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
                 if (NVthaydoi.info.MSNV == sua.msnv)
                 {
                     NVthaydoi.info = sua.NVtd;
+                    kt = 1;
                 }
                 NVthaydoi = NVthaydoi.Next;
-            }            
+            }
+            if (kt == 1) MessageBox.Show("Thay đổi thông tin nhân viên thành công.", "THÔNG BÁO:");
+            else MessageBox.Show("Không tồn tại nhân viên cần thay đổi thông tin", "THÔNG BÁO:");
         }
 
         private void bLuu_Click(object sender, EventArgs e)
@@ -171,6 +215,7 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
 
         private void bDoc_Click(object sender, EventArgs e)
         {
+            myList.clear(myList); //Xóa hết dữ liệu đã tồn tại trong danh sách liên kết
             StreamReader rd = new StreamReader("DanhSachNhanVien.txt", Encoding.UTF8); //Đọc file text
             if (rd == null) MessageBox.Show("Đọc file không thành công.", "THÔNG BÁO:");
             string x = rd.ReadLine();
@@ -194,6 +239,7 @@ namespace doan_ctdl_QuanLiNhanVien_DiepGiaHuu_NgKhacHoangPhi
                 x2.Nhap(Convert.ToString(msnv[1]), Convert.ToString(hotendem[1]), Convert.ToString(ten[1]), Convert.ToString(cmnd[1]), Convert.ToString(ngaysinh[1]), Convert.ToString(congviec[1]), Convert.ToString(luong[1]));
                 myList.addHead(x2);
             }
+            myList.Sort();
             if (rd != null) MessageBox.Show("Lấy dữ liệu thành công.", "THÔNG BÁO:");
             rd.Close();
         }

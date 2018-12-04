@@ -60,7 +60,7 @@
             this.dDanhSachNhanVien.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dDanhSachNhanVien.Location = new System.Drawing.Point(22, 88);
             this.dDanhSachNhanVien.Name = "dDanhSachNhanVien";
-            this.dDanhSachNhanVien.Size = new System.Drawing.Size(792, 457);
+            this.dDanhSachNhanVien.Size = new System.Drawing.Size(792, 474);
             this.dDanhSachNhanVien.TabIndex = 1;
             // 
             // tTimKiem
